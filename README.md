@@ -78,4 +78,3 @@ int main() {
 This output confirms that the parent process successfully received and printed the message sent by the child process through the pipe, demonstrating inter-process communication using pipes.
 
 
-RESULT:
