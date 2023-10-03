@@ -26,46 +26,27 @@ End of the program (return 0 in the parent process).
 
 ## PROGRAM:
 ```
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <string.h>
+import os
 
-int main() {
-    int fd[2];
-    pid_t child_pid;
-    char message[100];
+def main():
+    message = input("Enter a message: ").encode()
+    parent_pipe, child_pipe = os.pipe()
 
-    printf("Enter a message: ");
-    fgets(message, sizeof(message), stdin);
+    child_pid = os.fork()
 
-    if (pipe(fd) == -1) {
-        perror("Pipe creation failed");
-        exit(EXIT_FAILURE);
-    }
+    if child_pid == 0:
+        os.close(parent_pipe)
+        os.write(child_pipe, message)
+        os.close(child_pipe)
+        exit(0)
+    else:
+        os.close(child_pipe)
+        received_message = os.read(parent_pipe, 100)
+        os.close(parent_pipe)
+        print("Parent received:", received_message.decode())
 
-    child_pid = fork();
-
-    if (child_pid == -1) {
-        perror("Fork failed");
-        exit(EXIT_FAILURE);
-    }
-
-    if (child_pid == 0) {
-        close(fd[0]);
-        write(fd[1], message, strlen(message) + 1);
-        close(fd[1]);
-        exit(EXIT_SUCCESS);
-    } else {
-        char received_message[100];
-        close(fd[1]);
-        read(fd[0], received_message, sizeof(received_message));
-        close(fd[0]);
-        printf("Parent received: %s\n", received_message);
-    }
-
-    return 0;
-}
+if __name__ == "__main__":
+    main()
 
 
 ```
