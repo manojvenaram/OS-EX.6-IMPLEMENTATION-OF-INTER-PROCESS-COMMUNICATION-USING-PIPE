@@ -5,24 +5,25 @@ To Write C program to illustrate IPC using pipes mechanisms.
 
 ## ALGORITHM:
 ### Step 1:
-Create a pipe (pipe(fd)).
+Import the os module for process management and communication.
 ### Step 2:
-Fork a child process (child_pid = fork()).
+Define a main() function as the program's entry point.
 ### Step 3:
-In the child process:
-    1. Close the read end of the pipe (close(fd[0])).
-    2. Write a message to the pipe (write(fd[1], message, strlen(message) + 1)).
-    3. Close the write end of the pipe (close(fd[1])).
-    4. Exit the child process (exit(EXIT_SUCCESS)).
+Prompt the user to input a message and encode it as bytes.
 ### Step 4:
-In the parent process:
-    1. Close the write end of the pipe (close(fd[1])).
-    2. Read a message from the pipe (read(fd[0], received_message, sizeof(received_message))).
-    3. Close the read end of the pipe (close(fd[0])).
-    4. Print the received message (printf("Parent received: %s\n", received_message)).
-    5. Parent process continues execution.
+Create two pipes, parent_pipe and child_pipe, for communication.
+### Step 5:
+Fork a child process using os.fork().
 ### Step 6:
-End of the program (return 0 in the parent process).
+In the child process, close the parent's pipe end and write the message to the child's pipe end.4
+### Step 7:
+In the child process, close the child's pipe end.
+### Step 8:
+Exit the child process.
+### Step 9:
+In the parent process, close the child's pipe end.
+### Step 10:
+Read the message from the parent's pipe end, decode it, and print it.
 
 ## PROGRAM:
 ```
